@@ -10,15 +10,18 @@ public class AlternativeArithmetic {
      */
     public static int addWithoutPlus(int a, int b) {
         // Base case: if one of the numbers is 0, return the other
-        // TODO: return a if b is 0
-        // TODO: return b if a is 0
+        if (b == 0) return a; // Base case: if b is 0, return a
+        if (a == 0) return b; // Base case: if a is 0, return b
 
-        // TODO:Create a while loop that runs until b is 0. This loop will calculate the sum of a and b
-            // TODO: create a variable carry and assign it the result of the bitwise AND operation between a and b
-            // TODO: assign the result of the bitwise XOR operation between a and b to a
-            // TODO: assign the result of the left shift operation on carry by 1 to b
-        // TODO return a because it contains the sum of a and b
-        throw new UnsupportedOperationException("Not implemented yet");
+        while (b != 0) { 
+            int carry = a & b;  // Compute carry
+            a = a ^ b;          // Sum without carry
+            b = carry << 1;     // Shift carry left
+        }
+        return a; // a now contains the sum
+    
+
+      //  throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -29,29 +32,29 @@ public class AlternativeArithmetic {
      */
     public static int divideWithoutDivideOperator(int dividend, int divisor) {
         // Handle edge cases
-        // TODO: throw an ArithmeticException if divisor is 0
-        // TODO: return 0 if dividend is 0
-        // TODO: return dividend if divisor is 1
+    	if (divisor == 0) throw new ArithmeticException("Division by zero is undefined"); // Handle division by zero
+        if (dividend == 0) return 0;  // If dividend is 0, return 0
+        if (divisor == 1) return dividend; // Division by 1 returns dividend
+        
+        boolean isNegative = (dividend < 0) ^ (divisor < 0); // Determine sign of result using XOR
+        
+        long absDividend = Math.abs((long) dividend); // Convert to positive
+        long absDivisor = Math.abs((long) divisor);   // Convert to positive
 
-        // TODO: create a boolean variable isNegative and assign it the result of the XOR operation between dividend and divisor
-
-        // Convert to positive for the algorithm
-        // TODO: create a long variable absDividend and assign it the absolute value of dividend
-        // TODO: create a long variable absDivisor and assign it the absolute value of divisor
-
-        // Use a binary approach for division
-        // TODO: create an int variable result and assign it 0
-        // TODO: while absDividend is greater than or equal to absDivisor
-            // TODO: create a long variable temp and assign it the value of absDivisor
-            // TODO: create a long variable multiple and assign it 1
-            // TODO: while absDividend is greater than or equal to temp shifted left by 1
-                // TODO: shift temp left by 1
-                // TODO: shift multiple left by 1
-            // TODO: subtract temp from absDividend
-            // TODO: add multiple to result using the += operator
-
-        // TODO: return the result if isNegative is false
-        throw new UnsupportedOperationException("Not implemented yet");
+        int result = 0;
+        while (absDividend >= absDivisor) { // Subtract using bit shifting
+            long temp = absDivisor, multiple = 1;
+            while (absDividend >= (temp << 1)) { // Increase temp until it surpasses absDividend
+                temp <<= 1;
+                multiple <<= 1;
+            }
+            absDividend -= temp;
+            result += multiple;
+        }
+        
+        return isNegative ? -result : result; // Apply the correct sign
+    
+  //      throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -68,23 +71,23 @@ public class AlternativeArithmetic {
      */
     public static void main(String[] args) {
         // Test cases for addition
-        int[][] additionTests = {
-                {5, 3},     // 8
-                {-2, 7},    // 5
-                {0, 0},     // 0
-                {-5, -3},   // -8
-                {100, 200}, // 300
-                {Integer.MAX_VALUE, 1}, // Edge case: handling overflow
-                {-100, 100} // Additional: adding to zero
-        };
+   	 int[][] additionTests = {
+             {5, 3},     // 8
+             {-2, 7},    // 5
+             {0, 0},     // 0
+             {-5, -3},   // -8
+             {100, 200}, // 300
+             {Integer.MAX_VALUE, 1}, // Edge case: handling overflow
+             {-100, 100} // Additional: adding to zero
+     };
 
-        System.out.println("Testing addition without '+' operator:");
-        for (int[] test : additionTests) {
-            int result = addWithoutPlus(test[0], test[1]);
-            int expected = test[0] + test[1];
-            System.out.println(test[0] + " + " + test[1] + " = " + result +
-                    (result == expected ? " (Correct)" : " (Incorrect, expected " + expected + ")"));
-        }
+    System.out.println("Testing addition without '+' operator:");
+    for (int[] test : additionTests) {
+        int result = addWithoutPlus(test[0], test[1]);
+        int expected = test[0] + test[1];
+        System.out.println(test[0] + " + " + test[1] + " = " + result +
+                (result == expected ? " (Correct)" : " (Incorrect, expected " + expected + ")"));
+    }
 
         // Test cases for division
         int[][] divisionTests = {
